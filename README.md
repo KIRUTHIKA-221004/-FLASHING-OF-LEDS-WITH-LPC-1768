@@ -1,92 +1,116 @@
+# INTERFACING-OF-STEPPER-MOTOR-WITH-ARM-PROCESSOR.
 
-# AIM: 
-   To interface and toggle the led with ARM LPC 1768 microprocessor           
-           
+# AIM:
+To write an embedded c program to interface STEPPER MOTOR with ARM processor LPC1768.
+
 # COMPONENTS REQUIRED:
-##  HARDWARE:
-ARM LPC1768
-LED
-## SOFTWARE:
-KEIL MICRO VISION 4.0 IDE
+
+HARDWARE: ARM LPC 1768 STEPPER MOTOR. 
+
+SOFTWARE: KEIL MICRO VISION 4.0 IDE
 
 # PROCEDURE:
+⮚ Open the Keil software and select the New uvision project from Project Menu as shown below. 
 
+⮚ Browse to your project folder and provide the project name and click on save. 
 
-⮚	Open the Keil software and select the New uvision project from Project Menu as shown below.
+⮚ Once the project is saved a new pop up “Select Device for Target” opens, Select the controller (NXP: LPC1768) from NXP (founded by philips) and click on OK. 
 
-⮚	Browse to your project folder and provide the project name and click on save.
+⮚ Select the controller (NXP: LPC1768) and click on OK. 
 
-⮚	Once the project is saved a new pop up “Select Device for Target” opens, Select the controller (NXP: LPC1768) from NXP (founded by philips) and click on OK.
+⮚ As LPC1768 needs the startup code, click on Yes option to include the LPC17xx Startup file. 
 
-⮚	Select the controller (NXP: LPC1768) and click on OK.
+⮚ Create a new file by file → new to write the program.
 
-⮚	As LPC1768 needs the startup code, click on Yes option to include the LPC17xx Startup file.
+⮚ Type the code. 25
 
-⮚	Create a new file by file → new to write the program.
+⮚ After typing the code save the file as main.c eg. (abc.c). 
 
-⮚	Type the code.
+⮚ Right click target and Add the suitable files to source group1 and header for the project. ⮚ Add the main.c along with system_LPC17xx.c. 
 
-⮚	After typing the code save the file as main.c eg. (abc.c).
+⮚ Build the project and fix the compiler errors/warnings if any.
 
-⮚	Right click target and Add the suitable files to source group1 and header for the project.
+⮚ Code is compiled with no errors. The .bin file is still not generated.
 
-⮚	Add the main.c along with system_LPC17xx.c.
+⮚ Right Click on Target Options to select the option for generating .bin file. 
 
-⮚	Build the project and fix the compiler errors/warnings if any.
+⮚ Set IROM1 start address as 0x2000. Bootloader will be stored from 0x0000- 0x2000 so application should start from 0x2000 
 
-⮚	Code is compiled with no errors. The .bin file is still not generated.
+⮚ Write the command to generate the .bin file from .axf file Command: fromelf --bin projectname.axf --output filename.bin
 
-⮚	Right Click on Target Options to select the option for generating .bin file.
+⮚ in c/c++ → include paths → desktop (00-libfiles). 
 
-⮚	Set IROM1 start address as 0x2000. Bootloader will be stored from 0x0000- 0x2000 so application should start from 0x2000
+⮚ .Bin file is generated after a rebuild. 
 
-⮚	Write	the	command	to	generate	the .bin file	from
-.axf file
-Command: fromelf --bin projectname.axf --output filename.bin
+⮚ Check the project folder for the generated .Bin file.
 
-⮚	in c/c++ → include paths → desktop (00-libfiles).
+ADD FILES:
+Target1: Source group1: Startuplpc17xx.s, main.c (t), delay.c (t), systemlpc17xx.c (t), gpio.c (t) Header: Delay.h, stdutils.h, gpioi.h
 
-⮚	.Bin file is generated after a rebuild.
-
-⮚	Check the project folder for the generated .Bin file.
-
-# ADD FILES:
-Target1:
-Source group1:
-Startuplpc17xx.s, main.c (t), delay.c (t), systemlpc17xx.c (t), gpio.c (t)
-Header:
-Delay.h, stdutils.h, gpioi.h
-
-# PIN DIAGRAM :
-
- <img width="580" height="300" alt="image" src="https://github.com/user-attachments/assets/6e5c359a-def1-496b-a7da-49341f55c730" />
-
+# PIN DIAGRAM:
+<img width="391" height="276" alt="image" src="https://github.com/user-attachments/assets/5dd93d95-c44c-4753-8b27-c4b61712e40b" />
 
 # CIRCUIT DIAGRAM:
- 
-<img width="752" height="332" alt="image" src="https://github.com/user-attachments/assets/b83b10bf-5292-42ec-9e2c-d4e92a5a778e" />
+<img width="434" height="327" alt="image" src="https://github.com/user-attachments/assets/dd20b717-628c-44b9-aef2-a04232214ffb" />
 
 # PROGRAM:
-```
-#include <lpc17xx.h>
-#include "delay.h"	//User defined library which conatins the delay routines #include "gpio.h"
-#define LED P1_29	// Led is connected to P1.29
-/* start the main program */ int main()
-{
-SystemInit();	//Clock and PLL configuration GPIO_PinFunction(LED,PINSEL_FUNC_0); // Configure Pin for Gpio GPIO_PinDirection(LED,OUTPUT);	// Configure the pin as OUTPUT GPIO_PinWrite(LED,LOW);
-while(1)
-{
-/* Turn On all the leds and wait for 100ms */ GPIO_PinWrite(LED,HIGH);	// Make all the Port pin as high DELAY_ms(100);
-
-GPIO_PinWrite(LED,LOW);	// Make all the Port pin as low DELAY_ms(100);
-}
-}
 
 ```
+#include<lpc17xx.h> #include "gpio.h" #define pin1 20
+#define pin2 21
+#define pin3 22
+#define pin4 23
+#define control LPC_GPIO1-
+>FIOPIN
+void cmotor1()
+{
+control |=(1<<pin1); control |=(1<<pin2); control &=~(1<<pin3); control &=~(1<<pin4);
+
+}
+void cmotor2()
+{
+control &=~(1<<pin1); control |=(1<<pin2); control |=(1<<pin3); control &=~(1<<pin4);
+
+}
+void cmotor3()
+{
+control &=~(1<<pin1); control &=~(1<<pin2); control |=(1<<pin3); control |=(1<<pin4);
  
-# Output:
-<img width="638" height="462" alt="image" src="https://github.com/user-attachments/assets/78c3a383-b926-414f-a879-6596fd22bd9e" />
+}
 
+void cmotor4()
+{
+control |=(1<<pin1); control &=~(1<<pin2); control &=~(1<<pin3); control |=(1<<pin4);
+}
+void delay_ms(unsigned int ms)
+{
+unsigned int i,j;
 
-# Result:
-Thus a LED is interfaced with ARM LPC1768 microprocessor and its blinking was verified successfully.
+for(i=0;i<ms;i++) for(j=0;j<20000;j++);
+}
+int main()
+{
+SystemInit();
+//Clock and PLL configuration LPC_PINCON->PINSEL3 = 0x000000;
+LPC_GPIO1->FIODIR
+=(1<<pin1)|(1<<pin2)|(1<<pin3)
+| (1<<pin4); while(1)
+{
+cmotor1(); delay_ms(50); cmotor2();
+
+delay_ms(50);
+cmotor3();
+
+delay_ms(50);
+cmotor4();
+
+delay_ms(50);
+}
+}
+```
+
+# OUTPUT:
+![WhatsApp Image 2025-11-06 at 16 11 46_a87c1500](https://github.com/user-attachments/assets/eeb9bc0f-e5ec-4764-bf2d-598bd925f028)
+
+# RESULT:
+Thus interfacing STEPPER MOTOR with ARM processor LPC1768 is verified.
